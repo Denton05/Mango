@@ -7,7 +7,7 @@ public class AppDbContext : DbContext
 {
     #region Properties
 
-    private DbSet<Coupon> Coupons { get; set; }
+    public DbSet<Coupon> Coupons { get; set; }
 
     #endregion
 
