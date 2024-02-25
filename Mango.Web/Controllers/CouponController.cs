@@ -24,6 +24,28 @@ namespace Mango.Web.Controllers
 
         #region Public Methods
 
+        [HttpGet]
+        public IActionResult CouponCreate()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CouponCreate(CouponDto model)
+        {
+            if(ModelState.IsValid)
+            {
+                var response = await _couponService.CreateCouponAsync(model);
+
+                if(response != null && response.IsSuccess)
+                {
+                    return RedirectToAction("CouponIndex");
+                }
+            }
+
+            return View(model);
+        }
+
         public async Task<IActionResult> CouponIndex()
         {
             List<CouponDto>? list = new();
@@ -31,17 +53,10 @@ namespace Mango.Web.Controllers
 
             if(response != null && response.IsSuccess)
             {
-                var a = Convert.ToString(response.Result);
                 list = JsonConvert.DeserializeObject<List<CouponDto>>(Convert.ToString(response.Result));
             }
 
             return View(list);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> CouponCreate()
-        {
-            return View();
         }
 
         #endregion
