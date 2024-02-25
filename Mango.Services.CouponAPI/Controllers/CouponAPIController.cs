@@ -31,6 +31,24 @@ namespace Mango.Services.CouponAPI.Controllers
 
         #region Public Methods
 
+        [HttpDelete]
+        public ResponseDto Delete(int id)
+        {
+            try
+            {
+                var obj = _context.Coupons.First(o => o.CouponId == id);
+                _context.Coupons.Remove(obj);
+                _context.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+
+            return _response;
+        }
+
         [HttpGet]
         public ResponseDto Get()
         {
@@ -73,6 +91,44 @@ namespace Mango.Services.CouponAPI.Controllers
             try
             {
                 var obj = _context.Coupons.First(o => o.CouponCode.ToLower() == code.ToLower());
+                _response.Result = _mapper.Map<CouponDto>(obj);
+            }
+            catch(Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+
+            return _response;
+        }
+
+        [HttpPost]
+        public ResponseDto Post([FromBody] CouponDto couponDto)
+        {
+            try
+            {
+                var obj = _mapper.Map<Coupon>(couponDto);
+                _context.Coupons.Add(obj);
+                _context.SaveChanges();
+                _response.Result = _mapper.Map<CouponDto>(obj);
+            }
+            catch(Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+
+            return _response;
+        }
+
+        [HttpPut]
+        public ResponseDto Put([FromBody] CouponDto couponDto)
+        {
+            try
+            {
+                var obj = _mapper.Map<Coupon>(couponDto);
+                _context.Coupons.Update(obj);
+                _context.SaveChanges();
                 _response.Result = _mapper.Map<CouponDto>(obj);
             }
             catch(Exception ex)
