@@ -38,6 +38,12 @@ namespace Mango.Web.Controllers
             return View(list);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> CouponCreate()
+        {
+            return View();
+        }
+
         #endregion
     }
 }

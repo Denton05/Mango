@@ -15,7 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Coupon\CouponCreate.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Coupon\CouponIndex.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Coupon\CouponCreate.cshtml" />
   </ItemGroup>
 
 </Project>
