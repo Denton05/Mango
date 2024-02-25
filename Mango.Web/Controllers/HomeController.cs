@@ -1,32 +1,33 @@
-using Mango.Web.Models;
+using Mango.Web.Service.IService;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace Mango.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        #region Fields
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ICouponService _couponService;
+
+        #endregion
+
+        #region Construction
+
+        public HomeController(ICouponService couponService)
         {
-            _logger = logger;
+            _couponService = couponService;
         }
 
-        public IActionResult Index()
+        #endregion
+
+        #region Public Methods
+
+        public async Task<IActionResult> Index()
         {
+            var result = await _couponService.GetAllCouponsAsync();
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        #endregion
     }
 }
