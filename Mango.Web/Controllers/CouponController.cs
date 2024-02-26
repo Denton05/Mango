@@ -41,6 +41,8 @@ namespace Mango.Web.Controllers
                 {
                     return RedirectToAction("CouponIndex");
                 }
+
+                TempData["error"] = response?.Message;
             }
 
             return View(model);
@@ -57,6 +59,7 @@ namespace Mango.Web.Controllers
                 return View(model);
             }
 
+            TempData["error"] = response?.Message;
             return NotFound();
         }
 
@@ -70,6 +73,7 @@ namespace Mango.Web.Controllers
                 return RedirectToAction("CouponIndex");
             }
 
+            TempData["error"] = response?.Message;
             return View(couponDto);
         }
 
@@ -81,6 +85,10 @@ namespace Mango.Web.Controllers
             if(response != null && response.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<CouponDto>>(Convert.ToString(response.Result));
+            }
+            else
+            {
+                TempData["error"] = response?.Message;
             }
 
             return View(list);
