@@ -27,10 +27,25 @@ namespace Mango.Services.AuthAPI.Controllers
 
         #region Public Methods
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
+        [HttpPost("AssignRole")]
+        public async Task<IActionResult> Assign([FromBody] RegistrationRequestDto model)
         {
-            var loginResponse = await _authService.Login(loginRequestDto);
+            var assignRoleSuccessful = await _authService.AssignRole(model.Email, model.Role.ToUpper());
+
+            if(!assignRoleSuccessful)
+            {
+                _response.IsSuccess = false;
+                _response.Message = "Error encountered";
+                return BadRequest(_response);
+            }
+
+            return Ok(_response);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto model)
+        {
+            var loginResponse = await _authService.Login(model);
 
             if(loginResponse.User == null)
             {

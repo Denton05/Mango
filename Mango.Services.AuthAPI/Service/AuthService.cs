@@ -3,6 +3,7 @@ using Mango.Services.AuthAPI.Models;
 using Mango.Services.AuthAPI.Models.Dto;
 using Mango.Services.AuthAPI.Service.IService;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Mango.Services.AuthAPI.Service;
 
@@ -31,9 +32,26 @@ public class AuthService : IAuthService
 
     #region Public Methods
 
+    public async Task<bool> AssignRole(string email, string roleName)
+    {
+        var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+        if(user != null)
+        {
+            if(!await _roleManager.RoleExistsAsync(roleName))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+
+            await _userManager.AddToRoleAsync(user, roleName);
+            return true;
+        }
+
+        return false;
+    }
+
     public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
     {
-        var user = _context.ApplicationUsers.FirstOrDefault(u => u.UserName.ToLower() == loginRequestDto.UserName.ToLower());
+        var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.UserName.ToLower() == loginRequestDto.UserName.ToLower());
 
         var isValid = await _userManager.CheckPasswordAsync(user, loginRequestDto.Password);
 
@@ -77,16 +95,6 @@ public class AuthService : IAuthService
             var result = await _userManager.CreateAsync(user, registrationRequestDto.Password);
             if(result.Succeeded)
             {
-                //var userToReturn = _context.ApplicationUsers.First(u => u.UserName == registrationRequestDto.Email);
-
-                //var userDto = new UserDto
-                //              {
-                //                  Email = userToReturn.Email,
-                //                  ID = userToReturn.Id,
-                //                  Name = userToReturn.Name,
-                //                  PhoneNumber = userToReturn.PhoneNumber
-                //              };
-
                 return string.Empty;
             }
 
@@ -96,7 +104,7 @@ public class AuthService : IAuthService
         {
         }
 
-        return "Error Encountered";
+        return "Error encountered";
     }
 
     #endregion
