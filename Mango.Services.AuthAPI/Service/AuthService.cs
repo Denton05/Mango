@@ -29,9 +29,32 @@ public class AuthService : IAuthService
 
     #region Public Methods
 
-    public Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
+    public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
     {
-        throw new NotImplementedException();
+        var user = _context.ApplicationUsers.FirstOrDefault(u => u.UserName.ToLower() == loginRequestDto.UserName.ToLower());
+
+        var isValid = await _userManager.CheckPasswordAsync(user, loginRequestDto.Password);
+
+        if(user == null || !isValid)
+        {
+            return new LoginResponseDto { User = null, Token = string.Empty };
+        }
+
+        var userDto = new UserDto
+                      {
+                          Email = user.Email,
+                          ID = user.Id,
+                          Name = user.Name,
+                          PhoneNumber = user.PhoneNumber
+                      };
+
+        var loginResponseDto = new LoginResponseDto
+                               {
+                                   User = userDto,
+                                   Token = string.Empty
+                               };
+
+        return loginResponseDto;
     }
 
     public async Task<string> Register(RegistrationRequestDto registrationRequestDto)
@@ -50,17 +73,17 @@ public class AuthService : IAuthService
             var result = await _userManager.CreateAsync(user, registrationRequestDto.Password);
             if(result.Succeeded)
             {
-                var userToReturn = _context.ApplicationUsers.First(u => u.UserName == registrationRequestDto.Email);
+                //var userToReturn = _context.ApplicationUsers.First(u => u.UserName == registrationRequestDto.Email);
 
-                var userDto = new UserDto
-                              {
-                                  Email = userToReturn.Email,
-                                  ID = userToReturn.Id,
-                                  Name = userToReturn.Name,
-                                  PhoneNumber = userToReturn.PhoneNumber
-                              };
+                //var userDto = new UserDto
+                //              {
+                //                  Email = userToReturn.Email,
+                //                  ID = userToReturn.Id,
+                //                  Name = userToReturn.Name,
+                //                  PhoneNumber = userToReturn.PhoneNumber
+                //              };
 
-                return "";
+                return string.Empty;
             }
 
             return result.Errors.FirstOrDefault().Description;
