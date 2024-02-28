@@ -34,7 +34,7 @@ public class AuthService : IAuthService
         throw new NotImplementedException();
     }
 
-    public async Task<UserDto> Register(RegistrationRequestDto registrationRequestDto)
+    public async Task<string> Register(RegistrationRequestDto registrationRequestDto)
     {
         var user = new ApplicationUser
                    {
@@ -60,14 +60,16 @@ public class AuthService : IAuthService
                                   PhoneNumber = userToReturn.PhoneNumber
                               };
 
-                return userDto;
+                return "";
             }
+
+            return result.Errors.FirstOrDefault().Description;
         }
         catch
         {
         }
 
-        return new UserDto();
+        return "Error Encountered";
     }
 
     #endregion

@@ -6,5 +6,5 @@ public interface IAuthService
 {
     Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto);
 
-    Task<UserDto> Register(RegistrationRequestDto registrationRequestDto);
+    Task<string> Register(RegistrationRequestDto registrationRequestDto);
 }
