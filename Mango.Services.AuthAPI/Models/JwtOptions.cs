@@ -1,0 +1,14 @@
+﻿namespace Mango.Services.AuthAPI.Models;
+
+public class JwtOptions
+{
+    #region Properties
+
+    public string Audience { get; set; } = string.Empty;
+
+    public string Issuer { get; set; } = string.Empty;
+
+    public string Secret { get; set; } = string.Empty;
+
+    #endregion
+}
