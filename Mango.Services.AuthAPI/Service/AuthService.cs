@@ -11,6 +11,7 @@ public class AuthService : IAuthService
     #region Fields
 
     private readonly AppDbContext _context;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly UserManager<ApplicationUser> _userManager;
 
@@ -18,11 +19,12 @@ public class AuthService : IAuthService
 
     #region Construction
 
-    public AuthService(AppDbContext context, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+    public AuthService(AppDbContext context, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, IJwtTokenGenerator jwtTokenGenerator)
     {
         _context = context;
         _roleManager = roleManager;
         _userManager = userManager;
+        _jwtTokenGenerator = jwtTokenGenerator;
     }
 
     #endregion
@@ -40,6 +42,8 @@ public class AuthService : IAuthService
             return new LoginResponseDto { User = null, Token = string.Empty };
         }
 
+        var token = _jwtTokenGenerator.GenerateToken(user);
+
         var userDto = new UserDto
                       {
                           Email = user.Email,
@@ -51,7 +55,7 @@ public class AuthService : IAuthService
         var loginResponseDto = new LoginResponseDto
                                {
                                    User = userDto,
-                                   Token = string.Empty
+                                   Token = token
                                };
 
         return loginResponseDto;
