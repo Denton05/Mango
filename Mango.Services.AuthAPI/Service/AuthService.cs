@@ -65,7 +65,7 @@ public class AuthService : IAuthService
         var userDto = new UserDto
                       {
                           Email = user.Email,
-                          ID = user.Id,
+                          Id = user.Id,
                           Name = user.Name,
                           PhoneNumber = user.PhoneNumber
                       };
