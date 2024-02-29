@@ -4,6 +4,8 @@ public class SD
 {
     #region Properties
 
+    public static string AuthAPIBase { get; set; }
+
     public static string CouponAPIBase { get; set; }
 
     #endregion
