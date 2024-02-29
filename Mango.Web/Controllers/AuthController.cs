@@ -1,6 +1,10 @@
-﻿using Mango.Web.Models;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Mango.Web.Models;
 using Mango.Web.Service.IService;
 using Mango.Web.Utility;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
@@ -12,14 +16,34 @@ namespace Mango.Web.Controllers
         #region Fields
 
         private readonly IAuthService _authService;
+        private readonly ITokenProvider _tokenProvider;
 
         #endregion
 
         #region Construction
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, ITokenProvider tokenProvider)
         {
             _authService = authService;
+            _tokenProvider = tokenProvider;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private async Task SignInUserAsync(LoginResponseDto model)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(model.Token);
+            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Email, jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Email).Value));
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub).Value));
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Name, jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Name).Value));
+            identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Email).Value));
+
+            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
 
         #endregion
@@ -29,8 +53,7 @@ namespace Mango.Web.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            var loginRequestDto = new LoginRequestDto();
-            return View(loginRequestDto);
+            return View();
         }
 
         [HttpPost]
@@ -42,6 +65,8 @@ namespace Mango.Web.Controllers
             {
                 var loginResponseDto = JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(responseDto.Result));
 
+                await SignInUserAsync(loginResponseDto);
+                _tokenProvider.SetToken(loginResponseDto.Token);
                 return RedirectToAction("Index", "Home");
             }
 
@@ -60,8 +85,8 @@ namespace Mango.Web.Controllers
         {
             var roleList = new List<SelectListItem>
                            {
-                               new SelectListItem { Text = SD.RoleAdmin, Value = SD.RoleAdmin },
-                               new SelectListItem { Text = SD.RoleCustomer, Value = SD.RoleCustomer }
+                               new() { Text = SD.RoleAdmin, Value = SD.RoleAdmin },
+                               new() { Text = SD.RoleCustomer, Value = SD.RoleCustomer }
                            };
             ViewBag.RoleList = roleList;
             return View();
