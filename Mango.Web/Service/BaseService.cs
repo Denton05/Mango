@@ -71,8 +71,6 @@ public class BaseService : IBaseService
                     return new ResponseDto { IsSuccess = false, Message = "Unauthorized" };
                 case HttpStatusCode.InternalServerError:
                     return new ResponseDto { IsSuccess = false, Message = "Internal Server Error" };
-                case HttpStatusCode.BadRequest:
-                    return new ResponseDto { IsSuccess = false, Message = "Bad Request" };
                 default:
                     var apiContent = await apiResponse.Content.ReadAsStringAsync();
                     var apiResponseDto = JsonConvert.DeserializeObject<ResponseDto>(apiContent);

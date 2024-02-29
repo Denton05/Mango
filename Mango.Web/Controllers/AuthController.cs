@@ -71,7 +71,7 @@ namespace Mango.Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            ModelState.AddModelError("CustomError", responseDto.Message);
+            TempData["error"] = responseDto?.Message;
             return View(model);
         }
 
@@ -115,6 +115,10 @@ namespace Mango.Web.Controllers
                     TempData["success"] = "Registration Successful";
                     return RedirectToAction("Login");
                 }
+            }
+            else
+            {
+                TempData["error"] = result?.Message;
             }
 
             var roleList = new List<SelectListItem>
