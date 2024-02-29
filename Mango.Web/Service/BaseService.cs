@@ -12,21 +12,23 @@ public class BaseService : IBaseService
     #region Fields
 
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ITokenProvider _tokenProvider;
 
     #endregion
 
     #region Construction
 
-    public BaseService(IHttpClientFactory httpClientFactory)
+    public BaseService(IHttpClientFactory httpClientFactory, ITokenProvider tokenProvider)
     {
         _httpClientFactory = httpClientFactory;
+        _tokenProvider = tokenProvider;
     }
 
     #endregion
 
     #region Public Methods
 
-    public async Task<ResponseDto?> SendAsync(RequestDto requestDto)
+    public async Task<ResponseDto?> SendAsync(RequestDto requestDto, bool withBearer = true)
     {
         try
         {
@@ -34,7 +36,13 @@ public class BaseService : IBaseService
 
             var message = new HttpRequestMessage();
             message.Headers.Add("Accept", "application/json");
-            //TODO: token
+
+            if(withBearer)
+            {
+                var token = _tokenProvider.GetToken();
+                message.Headers.Add("Authorization", $"Bearer {token}");
+            }
+
             message.RequestUri = new Uri(requestDto.Url);
 
             if(requestDto.Data != null)

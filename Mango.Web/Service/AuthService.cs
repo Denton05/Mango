@@ -30,7 +30,7 @@ public class AuthService : IAuthService
                                                 ApiType = ApiType.POST,
                                                 Data = registrationRequestDto,
                                                 Url = AuthAPIBase + "/api/auth/AssignRole"
-                                            });
+                                            }, withBearer: false);
     }
 
     public async Task<ResponseDto?> LoginAsync(LoginRequestDto loginRequestDto)
@@ -40,7 +40,7 @@ public class AuthService : IAuthService
                                                 ApiType = ApiType.POST,
                                                 Data = loginRequestDto,
                                                 Url = AuthAPIBase + "/api/auth/login"
-                                            });
+                                            }, withBearer: false);
     }
 
     public async Task<ResponseDto?> RegisterAsync(RegistrationRequestDto registrationRequestDto)
@@ -50,7 +50,7 @@ public class AuthService : IAuthService
                                                 ApiType = ApiType.POST,
                                                 Data = registrationRequestDto,
                                                 Url = AuthAPIBase + "/api/auth/register"
-                                            });
+                                            }, withBearer: false);
     }
 
     #endregion
