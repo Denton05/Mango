@@ -2,6 +2,13 @@
 
 public class SD
 {
+    #region Constants
+
+    public const string RoleAdmin = "ADMIN";
+    public const string RoleCustomer = "CUSTOMER";
+
+    #endregion
+
     #region Properties
 
     public static string AuthAPIBase { get; set; }
