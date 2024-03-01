@@ -37,7 +37,7 @@ public class ProductController : Controller
         {
             var response = await _productService.CreateProductAsync(model);
 
-            if(response != null && response.IsSuccess)
+            if(response is { IsSuccess: true })
             {
                 TempData["success"] = "Product created successfully";
                 return RedirectToAction("ProductIndex");
@@ -54,7 +54,7 @@ public class ProductController : Controller
     {
         var response = await _productService.GetProductByIdAsync(productId);
 
-        if(response != null && response.IsSuccess)
+        if(response is { IsSuccess: true })
         {
             var model = JsonConvert.DeserializeObject<ProductDto>(Convert.ToString(response.Result));
             return View(model);
@@ -69,9 +69,39 @@ public class ProductController : Controller
     {
         var response = await _productService.DeleteProductAsync(productDto.ProductId);
 
-        if(response != null && response.IsSuccess)
+        if(response is { IsSuccess: true })
         {
             TempData["success"] = "Product deleted successfully";
+            return RedirectToAction("ProductIndex");
+        }
+
+        TempData["error"] = response?.Message;
+        return View(productDto);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ProductEdit(int productId)
+    {
+        var response = await _productService.GetProductByIdAsync(productId);
+
+        if(response is { IsSuccess: true })
+        {
+            var model = JsonConvert.DeserializeObject<ProductDto>(Convert.ToString(response.Result));
+            return View(model);
+        }
+
+        TempData["error"] = response?.Message;
+        return NotFound();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ProductEdit(ProductDto productDto)
+    {
+        var response = await _productService.UpdateProductAsync(productDto);
+
+        if(response is { IsSuccess: true })
+        {
+            TempData["success"] = "Product updated successfully";
             return RedirectToAction("ProductIndex");
         }
 
@@ -84,7 +114,7 @@ public class ProductController : Controller
         List<ProductDto>? list = new();
         var response = await _productService.GetAllProductsAsync();
 
-        if(response != null && response.IsSuccess)
+        if(response is { IsSuccess: true })
         {
             list = JsonConvert.DeserializeObject<List<ProductDto>>(Convert.ToString(response.Result));
         }
