@@ -16,6 +16,8 @@ public class SD
 
     public static string CouponAPIBase { get; set; }
 
+    public static string ProductAPIBase { get; set; }
+
     #endregion
 
     public enum ApiType
