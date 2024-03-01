@@ -52,7 +52,7 @@ namespace Mango.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> CouponDelete(int couponId)
         {
-            var response = await _couponService.GetCouponsByIdAsync(couponId);
+            var response = await _couponService.GetCouponByIdAsync(couponId);
 
             if(response != null && response.IsSuccess)
             {

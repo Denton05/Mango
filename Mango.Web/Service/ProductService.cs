@@ -51,7 +51,7 @@ public class ProductService : IProductService
                                             });
     }
 
-    public async Task<ResponseDto?> GetProductsByIdAsync(int id)
+    public async Task<ResponseDto?> GetProductByIdAsync(int id)
     {
         return await _baseService.SendAsync(new RequestDto
                                             {

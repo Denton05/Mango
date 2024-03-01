@@ -60,7 +60,7 @@ public class CouponService : ICouponService
                                             });
     }
 
-    public async Task<ResponseDto?> GetCouponsByIdAsync(int id)
+    public async Task<ResponseDto?> GetCouponByIdAsync(int id)
     {
         return await _baseService.SendAsync(new RequestDto
                                             {

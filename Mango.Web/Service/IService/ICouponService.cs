@@ -12,7 +12,7 @@ public interface ICouponService
 
     Task<ResponseDto?> GetCouponAsync(string couponCode);
 
-    Task<ResponseDto?> GetCouponsByIdAsync(int id);
+    Task<ResponseDto?> GetCouponByIdAsync(int id);
 
     Task<ResponseDto?> UpdateCouponAsync(CouponDto couponDto);
 }

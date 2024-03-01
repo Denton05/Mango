@@ -10,7 +10,7 @@ public interface IProductService
 
     Task<ResponseDto?> GetAllProductsAsync();
 
-    Task<ResponseDto?> GetProductsByIdAsync(int id);
+    Task<ResponseDto?> GetProductByIdAsync(int id);
 
     Task<ResponseDto?> UpdateProductAsync(ProductDto productDto);
 }
