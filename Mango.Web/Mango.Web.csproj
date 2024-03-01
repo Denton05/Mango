@@ -20,6 +20,7 @@
     <_ContentIncludedByDefault Remove="Views\Coupon\CouponCreate.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Coupon\CouponDelete.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Coupon\CouponIndex.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Home\ProductDetails.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Product\ProductCreate.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Product\ProductEdit.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Product\ProductIndex.cshtml" />
@@ -47,6 +48,10 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\Product\ProductEdit.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Home\ProductDetails.cshtml" />
   </ItemGroup>
 
 </Project>
