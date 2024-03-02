@@ -54,4 +54,8 @@
     <UpToDateCheckInput Remove="Views\Home\ProductDetails.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Cart\" />
+  </ItemGroup>
+
 </Project>
