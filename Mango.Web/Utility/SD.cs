@@ -18,6 +18,8 @@ public class SD
 
     public static string ProductAPIBase { get; set; }
 
+    public static string ShoppingCartAPIBase { get; set; }
+
     #endregion
 
     public enum ApiType
