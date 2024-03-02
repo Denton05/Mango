@@ -44,9 +44,60 @@ namespace Mango.Web.Controllers
         #region Public Methods
 
         [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ApplyCoupon(CartDto cartDto)
+        {
+            var response = await _cartService.ApplyCouponAsync(cartDto);
+            if(response is { IsSuccess: true })
+            {
+                TempData["success"] = "Cart updated successfully";
+            }
+            else
+            {
+                TempData["success"] = response?.Message;
+            }
+
+            return RedirectToAction("CartIndex");
+        }
+
+        [Authorize]
         public async Task<IActionResult> CartIndex()
         {
             return View(await LoadCartDtoBasedOnLoggedInUser());
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Remove(int cartDetailsId)
+        {
+            var response = await _cartService.RemoveFromCartAsync(cartDetailsId);
+            if(response is { IsSuccess: true })
+            {
+                TempData["success"] = "Cart updated successfully";
+            }
+            else
+            {
+                TempData["success"] = response?.Message;
+            }
+
+            return RedirectToAction("CartIndex");
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> RemoveCoupon(CartDto cartDto)
+        {
+            cartDto.CartHeader.CouponCode = string.Empty;
+            var response = await _cartService.ApplyCouponAsync(cartDto);
+            if(response is { IsSuccess: true })
+            {
+                TempData["success"] = "Cart updated successfully";
+            }
+            else
+            {
+                TempData["success"] = response?.Message;
+            }
+
+            return RedirectToAction("CartIndex");
         }
 
         #endregion
