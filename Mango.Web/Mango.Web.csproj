@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Auth\Register.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Cart\CartIndex.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Coupon\CouponCreate.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Coupon\CouponDelete.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Coupon\CouponIndex.cshtml" />
@@ -55,7 +56,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Cart\" />
+    <UpToDateCheckInput Remove="Views\Cart\CartIndex.cshtml" />
   </ItemGroup>
 
 </Project>
