@@ -85,6 +85,34 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
             return _response;
         }
 
+        [HttpPost("RemoveCart")]
+        public async Task<ResponseDto> RemoveCart([FromBody] int cartDetailsId)
+        {
+            try
+            {
+                var cartDetails = await _context.CartDetails.FirstAsync(cd => cd.CartDetailsId == cartDetailsId);
+                var totalCountOfCartItems = await _context.CartDetails.CountAsync(cd => cd.CartHeaderId == cartDetails.CartHeaderId);
+                _context.CartDetails.Remove(cartDetails);
+
+                if(totalCountOfCartItems == 1)
+                {
+                    var cartHeaderToRemove = await _context.CartHeaders.FirstOrDefaultAsync(ch => ch.CartHeaderId == cartDetails.CartHeaderId);
+                    _context.CartHeaders.Remove(cartHeaderToRemove);
+                }
+
+                await _context.SaveChangesAsync();
+
+                _response.Result = true;
+            }
+            catch(Exception ex)
+            {
+                _response.Message = ex.Message;
+                _response.IsSuccess = false;
+            }
+
+            return _response;
+        }
+
         #endregion
     }
 }
