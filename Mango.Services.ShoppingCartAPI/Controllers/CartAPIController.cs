@@ -15,6 +15,7 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
         #region Fields
 
         private readonly AppDbContext _context;
+        private readonly ICouponService _couponService;
         private readonly IMapper _mapper;
         private readonly IProductService _productService;
         private readonly ResponseDto _response;
@@ -23,12 +24,13 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
 
         #region Construction
 
-        public CartAPIController(AppDbContext context, IMapper mapper, IProductService productService)
+        public CartAPIController(AppDbContext context, IMapper mapper, IProductService productService, ICouponService couponService)
         {
             _context = context;
             _response = new ResponseDto();
             _mapper = mapper;
             _productService = productService;
+            _couponService = couponService;
         }
 
         #endregion
@@ -118,12 +120,22 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
                                       CartHeader = _mapper.Map<CartHeaderDto>(_context.CartHeaders.First(ch => ch.UserId == userId))
                                   };
                 cartDto.CartDetails = _mapper.Map<IEnumerable<CartDetailsDto>>(_context.CartDetails.Where(cd => cd.CartHeaderId == cartDto.CartHeader.CartHeaderId));
-                var productDtos = await _productService.GetProducts();
 
+                var productDtos = await _productService.GetProducts();
                 foreach(var item in cartDto.CartDetails)
                 {
                     item.Product = productDtos.FirstOrDefault(p => p.ProductId == item.ProductId);
                     cartDto.CartHeader.CartTotal += item.Count * item.Product.Price;
+                }
+
+                if(!string.IsNullOrEmpty(cartDto.CartHeader.CouponCode))
+                {
+                    var couponDto = await _couponService.GetCoupon(cartDto.CartHeader.CouponCode);
+                    if(couponDto != null && cartDto.CartHeader.CartTotal > couponDto.MinAmount)
+                    {
+                        cartDto.CartHeader.CartTotal -= couponDto.DiscountAmount;
+                        cartDto.CartHeader.Discount = couponDto.DiscountAmount;
+                    }
                 }
 
                 _response.Result = cartDto;
