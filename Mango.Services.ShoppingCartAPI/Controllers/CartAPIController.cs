@@ -38,7 +38,7 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
         #region Public Methods
 
         [HttpPost("ApplyCoupon")]
-        public async Task<object> ApplyCoupon([FromBody] CartDto cartDto)
+        public async Task<ResponseDto> ApplyCoupon([FromBody] CartDto cartDto)
         {
             try
             {
@@ -166,26 +166,6 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
 
                 await _context.SaveChangesAsync();
 
-                _response.Result = true;
-            }
-            catch(Exception ex)
-            {
-                _response.Message = ex.Message;
-                _response.IsSuccess = false;
-            }
-
-            return _response;
-        }
-
-        [HttpPost("RemoveCoupon")]
-        public async Task<object> RemoveCoupon([FromBody] CartDto cartDto)
-        {
-            try
-            {
-                var cart = await _context.CartHeaders.FirstAsync(ch => ch.UserId == cartDto.CartHeader.UserId);
-                cart.CouponCode = string.Empty;
-                _context.CartHeaders.Update(cart);
-                await _context.SaveChangesAsync();
                 _response.Result = true;
             }
             catch(Exception ex)

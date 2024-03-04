@@ -4,6 +4,7 @@ using Mango.Services.CouponAPI.Models;
 using Mango.Services.CouponAPI.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Mango.Services.CouponAPI.Controllers
 {
@@ -36,13 +37,13 @@ namespace Mango.Services.CouponAPI.Controllers
         [HttpDelete]
         [Route("{id:int}")]
         [Authorize(Roles = "ADMIN")]
-        public ResponseDto Delete(int id)
+        public async Task<ResponseDto> Delete(int id)
         {
             try
             {
-                var obj = _context.Coupons.First(o => o.CouponId == id);
+                var obj = await _context.Coupons.FirstAsync(o => o.CouponId == id);
                 _context.Coupons.Remove(obj);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch(Exception ex)
             {
@@ -54,11 +55,11 @@ namespace Mango.Services.CouponAPI.Controllers
         }
 
         [HttpGet]
-        public ResponseDto Get()
+        public async Task<ResponseDto> Get()
         {
             try
             {
-                IEnumerable<Coupon> objList = _context.Coupons.ToList();
+                IEnumerable<Coupon> objList = await _context.Coupons.ToListAsync();
                 _response.Result = _mapper.Map<IEnumerable<CouponDto>>(objList);
             }
             catch(Exception ex)
@@ -72,11 +73,11 @@ namespace Mango.Services.CouponAPI.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        public ResponseDto Get(int id)
+        public async Task<ResponseDto> Get(int id)
         {
             try
             {
-                var obj = _context.Coupons.First(o => o.CouponId == id);
+                var obj = await _context.Coupons.FirstAsync(o => o.CouponId == id);
                 _response.Result = _mapper.Map<CouponDto>(obj);
             }
             catch(Exception ex)
@@ -90,11 +91,11 @@ namespace Mango.Services.CouponAPI.Controllers
 
         [HttpGet]
         [Route("GetByCode/{code}")]
-        public ResponseDto GetByCode(string code)
+        public async Task<ResponseDto> GetByCode(string code)
         {
             try
             {
-                var obj = _context.Coupons.First(o => o.CouponCode.ToLower() == code.ToLower());
+                var obj = await _context.Coupons.FirstAsync(o => o.CouponCode.ToLower() == code.ToLower());
                 _response.Result = _mapper.Map<CouponDto>(obj);
             }
             catch(Exception ex)
@@ -108,13 +109,13 @@ namespace Mango.Services.CouponAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "ADMIN")]
-        public ResponseDto Post([FromBody] CouponDto couponDto)
+        public async Task<ResponseDto> Post([FromBody] CouponDto couponDto)
         {
             try
             {
                 var obj = _mapper.Map<Coupon>(couponDto);
-                _context.Coupons.Add(obj);
-                _context.SaveChanges();
+                await _context.Coupons.AddAsync(obj);
+                await _context.SaveChangesAsync();
                 _response.Result = _mapper.Map<CouponDto>(obj);
             }
             catch(Exception ex)
@@ -128,13 +129,13 @@ namespace Mango.Services.CouponAPI.Controllers
 
         [HttpPut]
         [Authorize(Roles = "ADMIN")]
-        public ResponseDto Put([FromBody] CouponDto couponDto)
+        public async Task<ResponseDto> Put([FromBody] CouponDto couponDto)
         {
             try
             {
                 var obj = _mapper.Map<Coupon>(couponDto);
                 _context.Coupons.Update(obj);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 _response.Result = _mapper.Map<CouponDto>(obj);
             }
             catch(Exception ex)

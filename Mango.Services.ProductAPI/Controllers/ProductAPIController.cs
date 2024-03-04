@@ -4,6 +4,7 @@ using Mango.Services.ProductAPI.Models;
 using Mango.Services.ProductAPI.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Mango.Services.ProductAPI.Controllers
 {
@@ -35,13 +36,13 @@ namespace Mango.Services.ProductAPI.Controllers
         [HttpDelete]
         [Route("{id:int}")]
         [Authorize(Roles = "ADMIN")]
-        public ResponseDto Delete(int id)
+        public async Task<ResponseDto> Delete(int id)
         {
             try
             {
-                var obj = _context.Products.First(o => o.ProductId == id);
+                var obj = await _context.Products.FirstAsync(o => o.ProductId == id);
                 _context.Products.Remove(obj);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch(Exception ex)
             {
@@ -53,11 +54,11 @@ namespace Mango.Services.ProductAPI.Controllers
         }
 
         [HttpGet]
-        public ResponseDto Get()
+        public async Task<ResponseDto> Get()
         {
             try
             {
-                IEnumerable<Product> objList = _context.Products.ToList();
+                IEnumerable<Product> objList = await _context.Products.ToListAsync();
                 _response.Result = _mapper.Map<IEnumerable<ProductDto>>(objList);
             }
             catch(Exception ex)
@@ -71,11 +72,11 @@ namespace Mango.Services.ProductAPI.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        public ResponseDto Get(int id)
+        public async Task<ResponseDto> Get(int id)
         {
             try
             {
-                var obj = _context.Products.First(o => o.ProductId == id);
+                var obj = await _context.Products.FirstAsync(o => o.ProductId == id);
                 _response.Result = _mapper.Map<ProductDto>(obj);
             }
             catch(Exception ex)
@@ -89,13 +90,13 @@ namespace Mango.Services.ProductAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "ADMIN")]
-        public ResponseDto Post([FromBody] ProductDto couponDto)
+        public async Task<ResponseDto> Post([FromBody] ProductDto couponDto)
         {
             try
             {
                 var obj = _mapper.Map<Product>(couponDto);
-                _context.Products.Add(obj);
-                _context.SaveChanges();
+                await _context.Products.AddAsync(obj);
+                await _context.SaveChangesAsync();
                 _response.Result = _mapper.Map<ProductDto>(obj);
             }
             catch(Exception ex)
@@ -109,13 +110,13 @@ namespace Mango.Services.ProductAPI.Controllers
 
         [HttpPut]
         [Authorize(Roles = "ADMIN")]
-        public ResponseDto Put([FromBody] ProductDto couponDto)
+        public async Task<ResponseDto> Put([FromBody] ProductDto couponDto)
         {
             try
             {
                 var obj = _mapper.Map<Product>(couponDto);
                 _context.Products.Update(obj);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 _response.Result = _mapper.Map<ProductDto>(obj);
             }
             catch(Exception ex)
