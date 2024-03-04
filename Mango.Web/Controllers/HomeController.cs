@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using Mango.Web.Models;
 using Mango.Web.Service.IService;
 using Microsoft.AspNetCore.Authorization;
@@ -13,15 +12,17 @@ namespace Mango.Web.Controllers
 
         private readonly ICartService _cartService;
         private readonly IProductService _productService;
+        private readonly IUserProvider _userProvider;
 
         #endregion
 
         #region Construction
 
-        public HomeController(ICartService cartService, IProductService productService)
+        public HomeController(ICartService cartService, IProductService productService, IUserProvider userProvider)
         {
             _cartService = cartService;
             _productService = productService;
+            _userProvider = userProvider;
         }
 
         #endregion
@@ -72,7 +73,7 @@ namespace Mango.Web.Controllers
                           {
                               CartHeader = new CartHeaderDto
                                            {
-                                               UserId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value
+                                               UserId = _userProvider.GetUserId()
                                            },
                               CartDetails = new List<CartDetailsDto>
                                             {
